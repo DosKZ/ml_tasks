@@ -6,14 +6,14 @@ def reg_plot(x,t,y,rmse_list):
     n = 1
     for row in range(5):
         for column in range(4):
-            axes[row, column].plot(x, t, 'b-', label='исходный',linewidth=0.3)
-            axes[row, column].plot(x, y[n - 1], 'r-', label='gолином')
+            axes[row, column].plot(x, t, 'bo', label='исходный',linewidth=0.3,markersize=0.3)
+            axes[row, column].plot(x, y[n - 1], 'r-', label='полином')
             axes[row, column].set_xlabel('X')
             axes[row, column].set_ylabel('Y')
             axes[row, column].legend(fontsize=5,loc='lower right')
             axes[row, column].set_title('Power {0} \n RMSE = {1}'.format(n, np.rint(rmse_list[n - 1])))
             n += 1
-    plt.ylim((-50, 700))
+    plt.ylim((-50, 1000))
     plt.subplots_adjust(wspace=0.5, hspace=1.5)
     plt.show()
 
