@@ -1,28 +1,31 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def reg_plot(x,t,y,rmse_list):
-    fig, axes = plt.subplots(5, 4, figsize=(10, 10))
-    n = 1
-    for row in range(5):
-        for column in range(4):
-            axes[row, column].plot(x, t, 'bo', label='исходный',linewidth=0.3,markersize=0.3)
-            axes[row, column].plot(x, y[n - 1], 'r-', label='полином')
-            axes[row, column].set_xlabel('X')
-            axes[row, column].set_ylabel('Y')
-            axes[row, column].legend(fontsize=5,loc='lower right')
-            axes[row, column].set_title('Power {0} \n RMSE = {1}'.format(n, np.rint(rmse_list[n - 1])))
-            n += 1
-    plt.ylim((-50, 1000))
-    plt.subplots_adjust(wspace=0.5, hspace=1.5)
-    plt.show()
 
-def rmse_plot(rmse_list):
-    x = np.arange(1, len(rmse_list)+1)
-    y = np.array(rmse_list)
-    fig, ax = plt.subplots()
-    ax.plot(x, y)
-    plt.ylim((0, 30000))
-    ax.set_xlabel('Max power')
-    ax.set_ylabel('RMSE')
+def bar_plot(models_list, bin_count=3, size=(15, 6), rmse_for=['rmse_train', 'rmse_valid'],
+             text=['обучающей', 'валидационной']):
+    width = 0.2
+    confidences = []
+    for rmse in rmse_for:
+        confidences.append([model[rmse] for model in models_list[:bin_count]])
+    labels = []
+    for i in range(bin_count):
+        weights = models_list[i]['w']
+        func_names = models_list[i]['model']
+        reg = "".join([f"{w:.2f}*{name}+" for w, name in zip(weights, func_names)]) + f"{weights[-1]:.2f}"
+        labels.append(reg)
+    bin_positions = np.arange(len(confidences[0]))
+    fig, ax = plt.subplots(figsize=size)
+    bins_arts = []
+    for i in range(len(confidences)):
+        bins_arts.append(
+            ax.bar(bin_positions - 0.1 * (-1) ** i, confidences[i], width, label=f"Точность на {text[i]} выборке"))
+    plt.ylabel('Точность')
+    plt.title('Точность различных архитектур')
+    plt.xticks(bin_positions, labels)
+    plt.legend(loc=3)
+    for rect in bins_arts:
+        for r in rect:
+            height = r.get_height()
+            plt.text(r.get_x() + r.get_width() / 2., height, f'{height:.2f}', ha='center', va='bottom')
     plt.show()
