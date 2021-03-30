@@ -2,17 +2,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def bar_plot(models_list, bin_count=3, size=(15, 6), rmse_for=['rmse_train', 'rmse_valid'],
+def bar_plot(models_list, bin_count=1, size=(15, 6), rmse_list=['rmse_train', 'rmse_valid'],
              text=['обучающей', 'валидационной']):
     width = 0.2
     confidences = []
-    for rmse in rmse_for:
+    for rmse in rmse_list:
         confidences.append([model[rmse] for model in models_list[:bin_count]])
     labels = []
     for i in range(bin_count):
         weights = models_list[i]['w']
         func_names = models_list[i]['model']
-        reg = "".join([f"{w:.2f}*{name}+" for w, name in zip(weights, func_names)]) + f"{weights[-1]:.2f}"
+        reg = "".join([f"{w:.2f}*{name}+" for w, name in zip(weights[1:], func_names)]) + f"{weights[0]:.2f}"
         labels.append(reg)
     bin_positions = np.arange(len(confidences[0]))
     fig, ax = plt.subplots(figsize=size)

@@ -26,33 +26,43 @@ models_list = []
 
 for i in range(1, 4):
     for comb in combinations(range(len(functions)), i):
-        phi = np.array(x_train ** 0).reshape(-1, 1)
+        phi = np.power(x_train,0).reshape(-1, 1)
         for k in comb:
             phi = np.concatenate((phi, func_from_str(functions[k], x_train.reshape(-1, 1))), axis=1)
         w = np.linalg.inv(np.dot(phi.T, phi)).dot(phi.T).dot(y_train)
         new_y_train = (w * phi).sum(axis=1)
         rmse_train = RMSE(y_train, new_y_train)
 
-        phi = np.array(x_valid ** 0).reshape(-1, 1)
+        phi = np.power(x_valid, 0).reshape(-1, 1)
         for k in comb:
             phi = np.concatenate((phi, func_from_str(functions[k], x_valid.reshape(-1, 1))), axis=1)
         new_y_valid = (w * phi).sum(axis=1)
         rmse_valid = RMSE(y_valid, new_y_valid)
 
-        phi = np.array(x_test ** 0).reshape(-1, 1)
-        for k in comb:
-            phi = np.concatenate((phi, func_from_str(functions[k], x_test.reshape(-1, 1))), axis=1)
-        new_y_test = (w * phi).sum(axis=1)
-        rmse_test = RMSE(y_test, new_y_test)
-
-        models = {}
-        models['model'] = functions[list(comb)]
-        models['w'] = w
-        models['rmse_train'] = rmse_train
-        models['rmse_valid'] = rmse_valid
-        models['rmse_test'] = rmse_test
-        models_list.append(models)
+        model = {}
+        model['model'] = functions[list(comb)]
+        model['w'] = w
+        model['rmse_train'] = rmse_train
+        model['rmse_valid'] = rmse_valid
+        models_list.append(model)
 models_list = sorted(models_list, key=lambda x: x['rmse_valid'])
+print(models_list[0])
 
-bar_plot(models_list)
-bar_plot(models_list, bin_count=1, size=(6, 4), rmse_for=['rmse_train', 'rmse_test'], text=['обучающей', 'тестовой'])
+comb=models_list[0]['model']
+w=models_list[0]['w']
+phi = np.power(x_test, 0).reshape(-1, 1)
+for k in comb:
+    phi = np.concatenate((phi, func_from_str(k, x_test.reshape(-1, 1))), axis=1)
+new_y_test = (w * phi).sum(axis=1)
+rmse_test = RMSE(y_test, new_y_test)
+
+model={}
+model['model'] = comb
+model['w'] = w
+model['rmse_train']=models_list[0]['rmse_train']
+model['rmse_test'] = rmse_test
+
+
+
+bar_plot(models_list,bin_count=3)
+bar_plot([model], bin_count=1, size=(6, 4), rmse_list=['rmse_train','rmse_test'], text=['обучающей','тестовой'])
