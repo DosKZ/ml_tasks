@@ -1,13 +1,3 @@
-def get_type(predict, true):
-    if predict == 1 and true == 1:
-        return 'TP'
-    elif predict == 0 and true == 0:
-        return 'TN'
-    elif predict == 1 and true == 0:
-        return 'FP'
-    elif predict == 0 and true == 1:
-        return 'FN'
-
 
 def accuracy(TP, TN, n):
     return (TP + TN) / n
@@ -24,4 +14,4 @@ def recall(TP, FN):
     try:
         return TP / (TP + FN)
     except ZeroDivisionError:
-        return 0
+        print('Данные не содержат класс 1')
