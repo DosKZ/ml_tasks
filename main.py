@@ -1,7 +1,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
 import utils.metrcis as metrics
-from utils.classifications import random_classifier, height_classifier
+from utils.сlassifiers import random_classifier, height_classifier
 
 football_player_height = np.random.randn(500) * 20 + 160
 basketball_player_height = np.random.randn(500) * 10 + 190
